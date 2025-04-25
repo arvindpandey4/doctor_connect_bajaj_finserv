@@ -2,6 +2,10 @@
 
 A web application for finding and booking doctor appointments. This application allows users to search for doctors, filter by specialties and consultation type, and sort by fees or experience.
 
+## Live Demo
+
+Visit the live application: [Doctor Connect](https://doctor-connect-bajaj-finserv-final.vercel.app/)
+
 ## Features
 
 - Search for doctors by name with autocomplete suggestions

@@ -12,15 +12,15 @@ import ErrorState from "@/components/ErrorState";
 import { useUrlParams } from "@/utils/useUrlParams";
 import { Doctor } from "@/types";
 
-// Create a client component to handle search params
+
 function DoctorContent() {
-  // State for doctors data
+  
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [filteredDoctors, setFilteredDoctors] = useState<Doctor[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   
-  // State for filters and search
+
   const [searchTerm, setSearchTerm] = useState("");
   const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
   const [consultationType, setConsultationType] = useState<string>("");
@@ -28,7 +28,7 @@ function DoctorContent() {
   const [sortBy, setSortBy] = useState<string>("");
   const [allSpecialties, setAllSpecialties] = useState<string[]>([]);
 
-  // Initialize URL params handling
+  
   const { updateUrlParams, clearAllFilters } = useUrlParams({
     searchTerm,
     setSearchTerm,
@@ -40,7 +40,7 @@ function DoctorContent() {
     setSortBy
   });
 
-  // Fetch doctors data from API
+  
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
@@ -53,19 +53,19 @@ function DoctorContent() {
         
         const data = await response.json();
         
-        // Adapt API format to our Doctor interface
+        
         if (Array.isArray(data) && data.length > 0) {
           const processedData: Doctor[] = data.map((item: any, index: number) => {
-            // Extract specialties array
+            
             const specialties = item.specialities 
               ? item.specialities.map((s: any) => s.name || "General") 
               : ["General"];
 
-            // Get fee as number by removing currency and non-numeric characters
+            
             const feeStr = item.fees ? item.fees.replace(/[^\d]/g, '') : '';
             const fee = feeStr ? parseInt(feeStr, 10) : 500;
             
-            // Extract years from experience string
+            
             let experience = 0;
             if (item.experience) {
               const experienceMatch = item.experience.match(/(\d+)/);
@@ -78,7 +78,7 @@ function DoctorContent() {
               specialties: specialties,
               experience: experience,
               fee: fee,
-              rating: 4.5, // Default since API doesn't provide this
+              rating: 4.5, 
               location: item.clinic?.address?.city || "Not specified",
               consultationMode: [
                 ...(item.video_consult ? ["Video Consult"] : []),
@@ -90,7 +90,7 @@ function DoctorContent() {
           
           setDoctors(processedData);
           
-          // Extract all unique specialties
+          
           const specialtiesSet = new Set<string>();
           processedData.forEach((doctor: Doctor) => {
             doctor.specialties.forEach((specialty: string) => {
@@ -114,27 +114,27 @@ function DoctorContent() {
     fetchDoctors();
   }, []);
 
-  // Apply filters and update URL whenever filters change
+  
   useEffect(() => {
     if (doctors.length === 0) return;
 
     let result = [...doctors];
 
-    // Apply search filter
+    
     if (searchTerm) {
       result = result.filter(doctor => 
         doctor.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
-    // Apply consultation type filter
+    
     if (consultationType) {
       result = result.filter(doctor => 
         doctor.consultationMode.includes(consultationType)
       );
     }
 
-    // Apply specialty filters
+    
     if (selectedSpecialties.length > 0) {
       result = result.filter(doctor => 
         selectedSpecialties.some(specialty => 
@@ -143,7 +143,7 @@ function DoctorContent() {
       );
     }
 
-    // Apply sorting
+    
     if (sortBy === "fees") {
       result.sort((a, b) => a.fee - b.fee);
     } else if (sortBy === "experience") {
@@ -154,7 +154,7 @@ function DoctorContent() {
     updateUrlParams();
   }, [doctors, searchTerm, consultationType, selectedSpecialties, sortBy, updateUrlParams]);
 
-  // Generate search suggestions
+
   useEffect(() => {
     if (!searchTerm) {
       setSearchSuggestions([]);
@@ -245,7 +245,6 @@ function DoctorContent() {
   );
 }
 
-// Main page component with Suspense boundary
 export default function Home() {
   return (
     <Suspense fallback={<LoadingState />}>
